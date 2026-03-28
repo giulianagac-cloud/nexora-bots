@@ -8,21 +8,17 @@ export function BotMessage({ content }: { content: string }) {
 
   return (
     <div className={`${styles.row} ${styles.rowAssistant}`}>
-      <div>
-        <div className={styles.label}>Assistant</div>
-        <div className={`${styles.bubble} ${styles.bubbleAssistant}`}>
-          {parts.map((part, index) =>
-            pdfUrlMatcher.test(part) ? (
-              <a key={`${part}-${index}`} href={`http://127.0.0.1:8000${part}`}>
-                {part}
-              </a>
-            ) : (
-              part
-            ),
-          )}
-        </div>
+      <div className={`${styles.bubble} ${styles.bubbleAssistant}`}>
+        {parts.map((part, index) =>
+          pdfUrlMatcher.test(part) ? (
+            <a key={`${part}-${index}`} href={`http://127.0.0.1:8001${part}`}>
+              {part}
+            </a>
+          ) : (
+            part
+          ),
+        )}
       </div>
     </div>
   );
 }
-

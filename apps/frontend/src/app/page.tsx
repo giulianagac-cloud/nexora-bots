@@ -4,6 +4,7 @@ import { useEffect, useState, useTransition } from "react";
 
 import { ChatWindow } from "@/components/chat/ChatWindow";
 import { chatRequest } from "@/lib/api/chat";
+import { fetchBotConfig } from "@/lib/api/config";
 import { ensureMocks } from "@/lib/mocks";
 import type { ChatMessage } from "@/types/chat";
 
@@ -13,8 +14,7 @@ const initialMessages: ChatMessage[] = [
   {
     id: "welcome",
     role: "assistant",
-    content:
-      "Welcome to TrenBot Enterprise. I can guide you through common HR requests such as leave, payroll, and employee documents.",
+    content: "¡Hola! Soy el asistente de Nexora. ¿En qué puedo ayudarte hoy?",
   },
 ];
 
@@ -24,9 +24,13 @@ export default function HomePage() {
   const [isSending, setIsSending] = useState(false);
   const [isPending, startTransition] = useTransition();
   const [isReady, setIsReady] = useState(false);
+  const [botName, setBotName] = useState("Asistente");
 
   useEffect(() => {
     ensureMocks().finally(() => setIsReady(true));
+    fetchBotConfig()
+      .then((cfg) => setBotName(cfg.bot_name))
+      .catch(() => {});
   }, []);
 
   async function handleSendMessage(value: string) {
@@ -61,7 +65,7 @@ export default function HomePage() {
       setError(
         requestError instanceof Error
           ? requestError.message
-          : "The assistant is temporarily unavailable.",
+          : "El asistente no está disponible en este momento.",
       );
     } finally {
       setIsSending(false);
@@ -71,29 +75,13 @@ export default function HomePage() {
   return (
     <main className={styles.page}>
       <div className={styles.shell}>
-        <section className={styles.heroCard}>
-          <p className={styles.eyebrow}>Internal Employee Experience</p>
-          <div className={styles.titleRow}>
-            <h1 className={styles.title}>TrenBot Enterprise</h1>
-            <div className={styles.badge}>
-              <span className={styles.badgeDot} />
-              Demo-ready HR assistant
-            </div>
-          </div>
-          <p className={styles.subtitle}>
-            A mobile-first assistant concept for Trenes employees, built to support guided HR
-            flows today and future enterprise integrations tomorrow.
-          </p>
-        </section>
-
-        <section className={styles.chatArea}>
-          <ChatWindow
-            error={error}
-            isLoading={isSending || isPending || !isReady}
-            messages={messages}
-            onSendMessage={handleSendMessage}
-          />
-        </section>
+        <ChatWindow
+          botName={botName}
+          error={error}
+          isLoading={isSending || isPending || !isReady}
+          messages={messages}
+          onSendMessage={handleSendMessage}
+        />
       </div>
     </main>
   );
