@@ -1,0 +1,10 @@
+{
+  "client_id": "demo",
+  "messages": {
+    "welcome": "¡Hola! Soy el asistente de Nexora. ¿En qué puedo ayudarte hoy?",
+    "fallback_main_menu": "No entendí bien tu consulta. ¿Podés reformularla?",
+    "fallback_module_menu": "Podés continuar dentro del módulo actual o escribir 'volver' para ir al menú principal.",
+    "back_to_main_menu": "Volviste al menú principal.",
+    "back_keywords": ["volver", "menu", "inicio"]
+  }
+}
