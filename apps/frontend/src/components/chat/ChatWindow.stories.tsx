@@ -9,6 +9,8 @@ const meta = {
     layout: "centered",
   },
   args: {
+    botName: "Asistente Nexora",
+    options: [],
     onSendMessage: async () => {},
   },
 } satisfies Meta<typeof ChatWindow>;
@@ -23,18 +25,35 @@ export const Default: Story = {
       {
         id: "assistant-1",
         role: "assistant",
-        content: "Hello. I can help you navigate common HR procedures.",
+        content: "¡Hola! Soy el asistente de Nexora. ¿En qué puedo ayudarte hoy?",
       },
       {
         id: "user-1",
         role: "user",
-        content: "I need help with vacation time.",
+        content: "Quiero sacar un turno.",
       },
       {
         id: "assistant-2",
         role: "assistant",
-        content: "Tell me whether the request is planned leave or an urgent absence.",
+        content: "Para sacar un turno podés contactarnos por WhatsApp o email.",
       },
+    ],
+  },
+};
+
+export const WithOptions: Story = {
+  args: {
+    messages: [
+      {
+        id: "assistant-1",
+        role: "assistant",
+        content: "¡Hola! Soy el asistente de Nexora. ¿En qué puedo ayudarte hoy?",
+      },
+    ],
+    options: [
+      { label: "Quiero sacar un turno", keyword: "turno" },
+      { label: "Consultar precios", keyword: "precio" },
+      { label: "Hablar con alguien", keyword: "contacto" },
     ],
   },
 };
@@ -52,7 +71,7 @@ export const Loading: Story = {
       {
         id: "assistant-1",
         role: "assistant",
-        content: "I can prepare the next step in your leave process.",
+        content: "¡Hola! Soy el asistente de Nexora. ¿En qué puedo ayudarte hoy?",
       },
     ],
   },
@@ -60,14 +79,13 @@ export const Loading: Story = {
 
 export const Error: Story = {
   args: {
-    error: "Unable to reach the HR assistant service.",
+    error: "El asistente no está disponible en este momento.",
     messages: [
       {
         id: "assistant-1",
         role: "assistant",
-        content: "Please try your request again.",
+        content: "Por favor intentá de nuevo.",
       },
     ],
   },
 };
-
