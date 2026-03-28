@@ -14,8 +14,14 @@ class ChatMessage(BaseModel):
     content: str
 
 
+class ChatOption(BaseModel):
+    label: str
+    keyword: str
+
+
 class ChatResponse(BaseModel):
     session_id: str
     reply: ChatMessage
     flow_state: str
+    options: list[ChatOption] = Field(default_factory=list)
 

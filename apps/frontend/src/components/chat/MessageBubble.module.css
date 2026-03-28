@@ -33,10 +33,16 @@
   font-weight: 500;
 }
 
+.options {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 8px;
+}
+
 .optionButton {
   display: block;
   width: 100%;
-  margin-top: 8px;
   padding: 8px 12px;
   border: 1px solid var(--accent-border);
   border-radius: var(--radius-md);

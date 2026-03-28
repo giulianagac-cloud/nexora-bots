@@ -3,7 +3,7 @@ from uuid import uuid4
 from app.core.logging import get_logger
 from app.domain.conversation import ConversationMessage, ConversationState
 from app.infrastructure.session.base import SessionStore
-from app.schemas.chat import ChatMessage, ChatRequest, ChatResponse
+from app.schemas.chat import ChatMessage, ChatOption, ChatRequest, ChatResponse
 from app.services.flow_engine import FlowEngine
 
 logger = get_logger(__name__)
@@ -19,12 +19,15 @@ class ConversationOrchestrator:
         if state is None:
             state = ConversationState(session_id=payload.session_id)
 
-        user_message = ConversationMessage(
-            id=str(uuid4()),
-            role="user",
-            content=payload.message,
-        )
-        state.messages.append(user_message)
+        is_init = payload.message == "__init__"
+
+        if not is_init:
+            user_message = ConversationMessage(
+                id=str(uuid4()),
+                role="user",
+                content=payload.message,
+            )
+            state.messages.append(user_message)
 
         flow_result = self.flow_engine.next_step(state=state, user_input=payload.message)
         assistant_message = ConversationMessage(
@@ -49,5 +52,6 @@ class ConversationOrchestrator:
             session_id=payload.session_id,
             flow_state=state.flow_state,
             reply=ChatMessage.model_validate(assistant_message.model_dump()),
+            options=[ChatOption(**opt) for opt in flow_result.options],
         )
 

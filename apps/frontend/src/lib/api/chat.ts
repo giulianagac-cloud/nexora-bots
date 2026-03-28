@@ -24,12 +24,13 @@ export async function chatRequest(
     session_id: string;
     flow_state: string;
     reply: { id: string; role: "assistant" | "user" | "system"; content: string };
+    options: { label: string; keyword: string }[];
   };
 
   return {
     sessionId: data.session_id,
     flowState: data.flow_state,
     reply: data.reply,
+    options: data.options ?? [],
   };
 }
-

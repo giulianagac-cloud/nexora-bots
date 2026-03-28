@@ -12,6 +12,7 @@ from pathlib import Path
 class FlowResult:
     flow_state: str
     reply_text: str
+    options: list[dict]
 
 
 # ---------------------------------------------------------------------------
@@ -75,12 +76,28 @@ class FlowEngine:
     #   2. ¿El flow actual tiene una opción cuyas keywords matcheen? → transición
     #   3. Sin match → fallback (distinto si estamos en main_menu o en submódulo)
     # -----------------------------------------------------------------------
+    def _options_for_state(self, state_name: str) -> list[dict]:
+        flow = self._flows.get(state_name, {})
+        result = []
+        for opt in flow.get("options", []):
+            if opt.get("label") and opt.get("keywords"):
+                result.append({"label": opt["label"], "keyword": opt["keywords"][0]})
+        return result
+
     def next_step(self, state, user_input: str) -> FlowResult:
+        # --- Paso 0: init trigger --------------------------------------------
+        # El frontend envía "__init__" al montar para obtener el estado inicial.
+        if user_input == "__init__":
+            main_flow = self._flows.get("main_menu", {})
+            return FlowResult(
+                flow_state="main_menu",
+                reply_text=main_flow.get("message", self._fallback_message),
+                options=self._options_for_state("main_menu"),
+            )
+
         normalized = self._normalize(user_input)
 
         # --- Paso 1: back keywords -------------------------------------------
-        # Si el usuario escribe "volver", "menu" o "inicio" desde cualquier
-        # estado que no sea main_menu, lo devolvemos al menú principal.
         if state.flow_state != "main_menu" and any(
             kw in normalized for kw in self._back_keywords
         ):
@@ -88,27 +105,24 @@ class FlowEngine:
             return FlowResult(
                 flow_state="main_menu",
                 reply_text=self._back_to_main_text + "\n\n" + main_flow.get("message", ""),
+                options=self._options_for_state("main_menu"),
             )
 
         # --- Paso 2: buscar match en el flow actual --------------------------
-        # Obtenemos el nodo del flow correspondiente al estado actual.
         current_flow = self._flows.get(state.flow_state)
 
         if current_flow:
             for option in current_flow.get("options", []):
-                # Una opción matchea si cualquiera de sus keywords aparece
-                # en el input normalizado del usuario.
                 if any(kw in normalized for kw in option["keywords"]):
                     next_state = option["next_state"]
                     next_flow = self._flows.get(next_state, {})
                     return FlowResult(
                         flow_state=next_state,
                         reply_text=next_flow.get("message", self._fallback_message),
+                        options=self._options_for_state(next_state),
                     )
 
         # --- Paso 3: fallback ------------------------------------------------
-        # En main_menu usamos el fallback general del flows.json.
-        # En cualquier otro estado usamos el fallback de módulo de messages.json.
         fallback_text = (
             self._fallback_message
             if state.flow_state == "main_menu"
@@ -117,4 +131,5 @@ class FlowEngine:
         return FlowResult(
             flow_state=state.flow_state,
             reply_text=fallback_text,
+            options=self._options_for_state(state.flow_state),
         )

@@ -1,4 +1,4 @@
-import type { ChatMessage } from "@/types/chat";
+import type { ChatMessage, ChatOption } from "@/types/chat";
 
 import { BotMessage } from "./BotMessage";
 import { ChatInput } from "./ChatInput";
@@ -10,6 +10,7 @@ import styles from "./ChatWindow.module.css";
 interface ChatWindowProps {
   botName: string;
   messages: ChatMessage[];
+  options: ChatOption[];
   isLoading?: boolean;
   error?: string | null;
   onSendMessage: (value: string) => Promise<void> | void;
@@ -18,11 +19,16 @@ interface ChatWindowProps {
 export function ChatWindow({
   botName,
   messages,
+  options,
   isLoading = false,
   error,
   onSendMessage,
 }: ChatWindowProps) {
   const isEmpty = messages.length === 0;
+  const lastBotIndex = messages.reduce(
+    (last, msg, i) => (msg.role === "assistant" ? i : last),
+    -1,
+  );
 
   return (
     <div className={styles.frame}>
@@ -46,11 +52,16 @@ export function ChatWindow({
 
       <div className={styles.body} data-empty={isEmpty}>
         {isEmpty ? <EmptyState /> : null}
-        {messages.map((message) =>
+        {messages.map((message, index) =>
           message.role === "user" ? (
             <UserMessage key={message.id} content={message.content} />
           ) : (
-            <BotMessage key={message.id} content={message.content} />
+            <BotMessage
+              key={message.id}
+              content={message.content}
+              options={index === lastBotIndex && !isLoading ? options : []}
+              onOptionClick={onSendMessage}
+            />
           ),
         )}
         {isLoading ? <LoadingState /> : null}
