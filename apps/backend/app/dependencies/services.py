@@ -1,10 +1,11 @@
+from app.core.config import get_settings
 from app.infrastructure.session.memory import InMemorySessionStore
 from app.services.chat_service import ChatService
 from app.services.conversation_orchestrator import ConversationOrchestrator
 from app.services.flow_engine import FlowEngine
 
 session_store = InMemorySessionStore()
-flow_engine = FlowEngine()
+flow_engine = FlowEngine(client_id=get_settings().client_id)
 orchestrator = ConversationOrchestrator(flow_engine=flow_engine, session_store=session_store)
 
 
