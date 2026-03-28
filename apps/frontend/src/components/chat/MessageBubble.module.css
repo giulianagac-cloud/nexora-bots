@@ -1,0 +1,47 @@
+.row {
+  display: flex;
+}
+
+.rowAssistant {
+  justify-content: flex-start;
+}
+
+.rowUser {
+  justify-content: flex-end;
+}
+
+.bubble {
+  max-width: min(82%, 420px);
+  padding: 14px 16px;
+  border-radius: 20px;
+  line-height: 1.45;
+  font-size: 0.97rem;
+  white-space: pre-wrap;
+}
+
+.bubbleAssistant {
+  border: 1px solid var(--border);
+  background: var(--surface-strong);
+  color: var(--text);
+  border-bottom-left-radius: 8px;
+}
+
+.bubbleUser {
+  background: linear-gradient(180deg, #165d49, #124938);
+  color: white;
+  border-bottom-right-radius: 8px;
+}
+
+.label {
+  margin-bottom: 6px;
+  color: var(--text-muted);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.labelUser {
+  text-align: right;
+}
+
