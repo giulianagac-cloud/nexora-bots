@@ -2,13 +2,14 @@
 SmartFlowEngine — misma interfaz pública que FlowEngine.
 
 Reemplaza el matching por keywords con clasificación TF-IDF via NLPEngine.
-El ConversationOrchestrator no necesita saber cuál motor está activo.
+Aplica context boosting: si el usuario ya está en un estado asociado a un
+intent, ese intent recibe un bonus de score para mantener el contexto salvo
+que el usuario cambie claramente de tema.
 """
 from __future__ import annotations
 
 import json
 import unicodedata
-from dataclasses import dataclass
 from pathlib import Path
 
 from app.services.flow_engine import FlowResult
@@ -40,7 +41,16 @@ class SmartFlowEngine:
         self._back_keywords: list[str] = msgs["back_keywords"]
 
         intents_data = _load_json(client_id, "intents.json")
+        self._context_boost: float = intents_data.get("context_boost", 0.0)
         self._nlp = NLPEngine(intents_data)
+
+        # Mapa inverso state → intent para el boosting de contexto.
+        self._state_to_intent: dict[str, str] = {}
+        for intent_def in intents_data.get("intents", []):
+            intent_name = intent_def["intent"]
+            next_state = intent_def.get("next_state")
+            if next_state:
+                self._state_to_intent[next_state] = intent_name
 
     def _normalize(self, text: str) -> str:
         nfd = unicodedata.normalize("NFD", text.lower().strip())
@@ -53,6 +63,42 @@ class SmartFlowEngine:
             if opt.get("label") and opt.get("keywords"):
                 result.append({"label": opt["label"], "keyword": opt["keywords"][0]})
         return result
+
+    def _classify_with_context(self, user_input: str, current_state: str) -> tuple[str | None, float]:
+        """
+        Clasifica el input aplicando context boost al intent del estado actual.
+        Si el usuario está en turnos_menu y escribe algo ambiguo, el intent
+        'turnos' recibe un bonus antes de comparar con otros intents.
+        """
+        intent_scores = self._nlp.scores(user_input)
+
+        # Aplicar boost al intent correspondiente al estado actual.
+        context_intent = self._state_to_intent.get(current_state)
+        if context_intent and self._context_boost > 0:
+            intent_scores[context_intent] = (
+                intent_scores.get(context_intent, 0.0) + self._context_boost
+            )
+
+        if not intent_scores:
+            return None, 0.0
+
+        best_intent = max(intent_scores, key=lambda k: intent_scores[k])
+        best_score = intent_scores[best_intent]
+
+        # El threshold se aplica sobre el score sin boost para no bajar el
+        # umbral de confianza real — sólo usamos el boost para desempatar.
+        raw_scores = self._nlp.scores(user_input)
+        raw_best = raw_scores.get(best_intent, 0.0)
+        threshold = self._nlp._threshold
+
+        if raw_best < threshold and best_intent != context_intent:
+            return None, raw_best
+
+        # Si ganó por boost pero el score crudo es muy bajo, aplicar fallback.
+        if best_intent == context_intent and raw_best < threshold * 0.4:
+            return None, raw_best
+
+        return best_intent, best_score
 
     def next_step(self, state, user_input: str) -> FlowResult:
         # --- Paso 0: init trigger -------------------------------------------
@@ -77,8 +123,8 @@ class SmartFlowEngine:
                 options=self._options_for_state("main_menu"),
             )
 
-        # --- Paso 2: clasificación NLP --------------------------------------
-        intent, score = self._nlp.classify(user_input)
+        # --- Paso 2: clasificación NLP con context boosting -----------------
+        intent, score = self._classify_with_context(user_input, state.flow_state)
 
         if intent is not None:
             next_state = self._nlp.state_for_intent(intent) or state.flow_state

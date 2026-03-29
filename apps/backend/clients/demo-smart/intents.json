@@ -1,6 +1,7 @@
 {
   "client_id": "demo-smart",
   "confidence_threshold": 0.50,
+  "context_boost": 0.35,
   "intents": [
     {
       "intent": "turnos",
@@ -16,7 +17,13 @@
         "quiero reservar",
         "pedir turno",
         "agendar cita",
-        "reservar hora"
+        "reservar hora",
+        "cuánto cuesta el turno",
+        "qué precio tiene el turno",
+        "cuánto sale sacar un turno",
+        "cuánto vale reservar",
+        "el precio del turno",
+        "tarifa para sacar turno"
       ]
     },
     {
