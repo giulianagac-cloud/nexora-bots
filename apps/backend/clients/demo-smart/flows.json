@@ -1,0 +1,42 @@
+{
+  "client_id": "demo",
+  "flows": [
+    {
+      "state": "main_menu",
+      "message": "¡Hola! Soy el asistente de Nexora. ¿En qué puedo ayudarte hoy?",
+      "options": [
+        {
+          "label": "Quiero sacar un turno",
+          "keywords": ["turno", "reservar", "reserva", "cita"],
+          "next_state": "turnos_menu"
+        },
+        {
+          "label": "Consultar precios",
+          "keywords": ["precio", "costo", "cuanto vale", "tarifa"],
+          "next_state": "precios_menu"
+        },
+        {
+          "label": "Hablar con alguien",
+          "keywords": ["contacto", "hablar", "persona", "humano"],
+          "next_state": "contacto_menu"
+        }
+      ]
+    },
+    {
+      "state": "turnos_menu",
+      "message": "Para sacar un turno podés contactarnos por WhatsApp o email. Te paso los datos.",
+      "options": []
+    },
+    {
+      "state": "precios_menu",
+      "message": "Nuestros precios varían según el servicio. ¿Querés que te contacte un asesor?",
+      "options": []
+    },
+    {
+      "state": "contacto_menu",
+      "message": "Podés contactarnos por WhatsApp o por email. ¡Estamos para ayudarte!",
+      "options": []
+    }
+  ],
+  "fallback_message": "No entendí bien tu consulta. ¿Podés reformularla?"
+}

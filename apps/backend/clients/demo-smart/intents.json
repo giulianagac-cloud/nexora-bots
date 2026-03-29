@@ -1,5 +1,5 @@
 {
-  "client_id": "demo",
+  "client_id": "demo-smart",
   "confidence_threshold": 0.50,
   "intents": [
     {
