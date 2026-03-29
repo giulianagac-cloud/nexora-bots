@@ -1,0 +1,58 @@
+{
+  "client_id": "demo",
+  "confidence_threshold": 0.18,
+  "intents": [
+    {
+      "intent": "turnos",
+      "next_state": "turnos_menu",
+      "examples": [
+        "quiero sacar un turno",
+        "necesito reservar una cita",
+        "cómo agendo una visita",
+        "me gustaría pedir hora",
+        "quiero hacer una reserva",
+        "necesito un turno",
+        "cómo saco un turno",
+        "quiero reservar",
+        "pedir turno",
+        "agendar cita",
+        "reservar hora"
+      ]
+    },
+    {
+      "intent": "precios",
+      "next_state": "precios_menu",
+      "examples": [
+        "cuánto sale",
+        "cuánto cuesta",
+        "qué precio tiene",
+        "me podés dar un presupuesto",
+        "cuánto vale el servicio",
+        "cuál es la tarifa",
+        "quiero saber el costo",
+        "precios",
+        "tarifas",
+        "presupuesto",
+        "valor del servicio",
+        "cuánto cobran"
+      ]
+    },
+    {
+      "intent": "contacto",
+      "next_state": "contacto_menu",
+      "examples": [
+        "quiero hablar con alguien",
+        "necesito hablar con una persona",
+        "quiero contactarme",
+        "cómo los contacto",
+        "me comunico con ustedes",
+        "quiero hablar con un humano",
+        "necesito atención personalizada",
+        "contacto",
+        "hablar con una persona real",
+        "soporte humano",
+        "atención al cliente"
+      ]
+    }
+  ]
+}

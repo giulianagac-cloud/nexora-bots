@@ -1,6 +1,7 @@
 {
   "client_id": "demo",
   "bot_name": "Asistente Nexora",
+  "bot_type": "smart",
   "contact": {
     "whatsapp": "+54911234567",
     "email": "contacto@nexoraintelligence.co"
