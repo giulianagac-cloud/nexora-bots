@@ -38,6 +38,10 @@ class ConversationOrchestrator:
         state.messages.append(assistant_message)
         state.flow_state = flow_result.flow_state
 
+        # Persistir entidades: merge acumulativo dentro de la sesión.
+        if flow_result.entities:
+            state.entities.update(flow_result.entities)
+
         await self.session_store.save(state)
         logger.info(
             "chat_message_processed",
@@ -45,6 +49,7 @@ class ConversationOrchestrator:
                 "session_id": payload.session_id,
                 "flow_state": state.flow_state,
                 "message_count": len(state.messages),
+                "entities": state.entities,
             },
         )
 
@@ -53,5 +58,5 @@ class ConversationOrchestrator:
             flow_state=state.flow_state,
             reply=ChatMessage.model_validate(assistant_message.model_dump()),
             options=[ChatOption(**opt) for opt in flow_result.options],
+            entities=state.entities,
         )
-

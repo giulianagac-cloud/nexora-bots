@@ -1,18 +1,18 @@
 import json
 import unicodedata
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from pathlib import Path
 
 
 # ---------------------------------------------------------------------------
-# FlowResult — mismo contrato que antes: estado resultante + texto de respuesta.
-# El orchestrator y los tests esperan exactamente estos dos campos.
+# FlowResult — contrato entre motores y orchestrator.
 # ---------------------------------------------------------------------------
 @dataclass
 class FlowResult:
     flow_state: str
     reply_text: str
     options: list[dict]
+    entities: dict[str, str] = field(default_factory=dict)
 
 
 # ---------------------------------------------------------------------------

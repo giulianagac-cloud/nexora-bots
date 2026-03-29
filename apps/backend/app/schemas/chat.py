@@ -24,4 +24,5 @@ class ChatResponse(BaseModel):
     reply: ChatMessage
     flow_state: str
     options: list[ChatOption] = Field(default_factory=list)
+    entities: dict[str, str] = Field(default_factory=dict)
 

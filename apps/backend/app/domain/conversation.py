@@ -19,3 +19,4 @@ class ConversationState(BaseModel):
     session_id: str
     flow_state: str = "main_menu"
     messages: list[ConversationMessage] = Field(default_factory=list)
+    entities: dict[str, str] = Field(default_factory=dict)

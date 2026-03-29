@@ -12,6 +12,7 @@ import json
 import unicodedata
 from pathlib import Path
 
+from app.services.entity_extractor import EntityExtractor
 from app.services.flow_engine import FlowResult
 from app.services.nlp_engine import NLPEngine
 
@@ -43,6 +44,7 @@ class SmartFlowEngine:
         intents_data = _load_json(client_id, "intents.json")
         self._context_boost: float = intents_data.get("context_boost", 0.0)
         self._nlp = NLPEngine(intents_data)
+        self._entity_extractor = EntityExtractor()
 
         # Mapa inverso state → intent para el boosting de contexto.
         self._state_to_intent: dict[str, str] = {}
@@ -123,7 +125,10 @@ class SmartFlowEngine:
                 options=self._options_for_state("main_menu"),
             )
 
-        # --- Paso 2: clasificación NLP con context boosting -----------------
+        # --- Paso 2: extracción de entidades (paralelo a NLP) ---------------
+        entities = self._entity_extractor.extract(user_input)
+
+        # --- Paso 3: clasificación NLP con context boosting -----------------
         intent, score = self._classify_with_context(user_input, state.flow_state)
 
         if intent is not None:
@@ -133,9 +138,10 @@ class SmartFlowEngine:
                 flow_state=next_state,
                 reply_text=next_flow.get("message", self._fallback_message),
                 options=self._options_for_state(next_state),
+                entities=entities,
             )
 
-        # --- Paso 3: fallback -----------------------------------------------
+        # --- Paso 4: fallback -----------------------------------------------
         fallback_text = (
             self._fallback_message
             if state.flow_state == "main_menu"
@@ -145,4 +151,5 @@ class SmartFlowEngine:
             flow_state=state.flow_state,
             reply_text=fallback_text,
             options=self._options_for_state(state.flow_state),
+            entities=entities,
         )
