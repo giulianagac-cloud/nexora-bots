@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NEXORA Bots — Spot 2</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;700;800&display=swap" rel="stylesheet">
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body {
+  background:#000;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  min-height:100vh;
+  font-family:'JetBrains Mono', monospace;
+}
+.stage {
+  width:405px;
+  height:720px;
+  background:#080810;
+  position:relative;
+  overflow:hidden;
+  cursor:pointer;
+}
+.scene {
+  position:absolute;
+  inset:0;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  padding:40px;
+  opacity:0;
+  pointer-events:none;
+}
+.scene.active { pointer-events:auto; }
+
+/* Glow */
+.glow {
+  position:absolute;
+  border-radius:50%;
+  pointer-events:none;
+}
+.glow-1 {
+  width:350px;height:350px;
+  background:radial-gradient(circle,rgba(0,229,160,0.1) 0%,transparent 70%);
+  bottom:-80px;right:-80px;
+  opacity:0;transition:opacity 1s;
+}
+.glow-2 {
+  width:280px;height:280px;
+  background:radial-gradient(circle,rgba(0,85,255,0.08) 0%,transparent 70%);
+  top:-60px;left:-60px;
+  opacity:0;transition:opacity 1s;
+}
+
+/* Grid */
+.grid-bg {
+  position:absolute;inset:0;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.02) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(255,255,255,0.02) 1px,transparent 1px);
+  background-size:40px 40px;
+  opacity:0;transition:opacity 1s;
+}
+
+/* S1 — problema */
+#s1 .big-q {
+  font-size:26px;font-weight:700;
+  color:#f0f0f5;text-align:center;
+  line-height:1.5;opacity:0;
+}
+#s1 .stat {
+  font-size:64px;font-weight:800;
+  color:#00e5a0;margin-top:20px;opacity:0;
+}
+#s1 .stat-label {
+  font-size:13px;color:#5a5a72;
+  letter-spacing:0.08em;margin-top:4px;opacity:0;
+}
+
+/* S2 — solución reveal */
+#s2 .sol-title {
+  font-size:18px;color:#5a5a72;
+  letter-spacing:0.12em;text-transform:uppercase;
+  margin-bottom:20px;opacity:0;
+}
+#s2 .bot-name {
+  font-size:36px;font-weight:800;
+  text-align:center;line-height:1.3;opacity:0;
+  transform:translateY(20px);
+}
+#s2 .green { color:#00e5a0; }
+#s2 .blue { color:#5599ff; }
+#s2 .purple { color:#c070ff; }
+
+/* S3 — chat demo */
+#s3 .chat-window {
+  width:100%;background:#11111c;
+  border:1px solid rgba(255,255,255,0.07);
+  border-radius:12px;overflow:hidden;
+  opacity:0;transform:translateY(30px);
+}
+#s3 .chat-header {
+  padding:12px 16px;
+  background:rgba(255,255,255,0.03);
+  border-bottom:1px solid rgba(255,255,255,0.07);
+  display:flex;align-items:center;gap:10px;
+}
+#s3 .chat-av {
+  width:28px;height:28px;border-radius:50%;
+  background:linear-gradient(135deg,#00e5a0,#0055ff);
+  display:flex;align-items:center;justify-content:center;
+  font-size:13px;
+}
+#s3 .chat-name { font-size:12px;font-weight:700;color:#f0f0f5; }
+#s3 .chat-status {
+  font-size:10px;color:#00e5a0;
+  display:flex;align-items:center;gap:4px;margin-left:auto;
+}
+#s3 .chat-status::before {
+  content:'';width:5px;height:5px;border-radius:50%;
+  background:#00e5a0;animation:blink 2s infinite;
+}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+#s3 .chat-msgs { padding:14px;display:flex;flex-direction:column;gap:10px;min-height:200px; }
+.msg {
+  max-width:85%;padding:9px 13px;border-radius:10px;
+  font-size:11px;line-height:1.6;opacity:0;
+  transform:translateY(8px);transition:all 0.3s;
+}
+.msg.show { opacity:1;transform:translateY(0); }
+.msg-bot {
+  background:rgba(255,255,255,0.05);
+  border:1px solid rgba(255,255,255,0.08);
+  border-bottom-left-radius:3px;
+  align-self:flex-start;color:#f0f0f5;
+}
+.msg-usr {
+  background:#00e5a0;color:#080810;
+  border-bottom-right-radius:3px;
+  align-self:flex-end;font-weight:600;
+}
+
+/* S4 — planes */
+#s4 .plan {
+  width:100%;padding:14px 18px;
+  border-radius:8px;margin:6px 0;
+  display:flex;align-items:center;gap:14px;
+  opacity:0;transform:translateX(-40px);
+  border:1px solid rgba(255,255,255,0.06);
+  background:#11111c;
+}
+#s4 .plan-dot {
+  width:8px;height:8px;border-radius:50%;flex-shrink:0;
+}
+#s4 .plan-name { font-size:16px;font-weight:700;color:#f0f0f5; }
+#s4 .plan-desc { font-size:11px;color:#5a5a72;margin-top:2px; }
+#s4 .plan-tag {
+  margin-left:auto;font-size:10px;font-weight:700;
+  padding:3px 8px;border-radius:2px;letter-spacing:.04em;
+  flex-shrink:0;
+}
+
+/* S5 — stats */
+#s5 .stats-title {
+  font-size:14px;color:#5a5a72;
+  letter-spacing:0.1em;text-transform:uppercase;
+  margin-bottom:24px;opacity:0;
+}
+#s5 .stat-row {
+  display:flex;gap:20px;margin-bottom:20px;
+  width:100%;
+}
+#s5 .stat-box {
+  flex:1;background:#11111c;
+  border:1px solid rgba(255,255,255,0.06);
+  border-radius:8px;padding:16px 14px;
+  text-align:center;opacity:0;
+  transform:translateY(20px);
+}
+#s5 .stat-num {
+  font-size:36px;font-weight:800;
+  color:#00e5a0;line-height:1;
+}
+#s5 .stat-lbl {
+  font-size:10px;color:#5a5a72;
+  margin-top:6px;letter-spacing:.04em;
+}
+
+/* S6 — CTA */
+#s6 .cta-logo {
+  font-size:32px;font-weight:800;
+  text-align:center;opacity:0;
+  transform:translateY(10px);
+}
+#s6 .cta-logo .w { color:#f0f0f5; }
+#s6 .cta-logo .g { color:#00e5a0; }
+#s6 .cta-sub {
+  font-size:13px;color:#5a5a72;
+  text-align:center;margin-top:12px;
+  letter-spacing:.06em;opacity:0;
+}
+#s6 .cta-btn {
+  margin-top:28px;
+  background:#00e5a0;color:#080810;
+  font-family:'JetBrains Mono',monospace;
+  font-weight:700;font-size:12px;
+  letter-spacing:.1em;text-transform:uppercase;
+  padding:14px 28px;border-radius:2px;
+  opacity:0;transform:translateY(10px);
+  border:none;cursor:default;
+}
+#s6 .cta-url {
+  font-size:14px;color:rgba(0,229,160,.6);
+  margin-top:16px;opacity:0;
+}
+
+/* dots */
+.scene-dots {
+  position:absolute;bottom:16px;left:50%;
+  transform:translateX(-50%);
+  display:flex;gap:6px;z-index:10;
+}
+.dot { width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.2);transition:all .3s; }
+.dot.active { background:#00e5a0;width:18px;border-radius:3px; }
+
+.play-hint {
+  position:absolute;bottom:46px;left:50%;
+  transform:translateX(-50%);
+  font-size:11px;color:rgba(255,255,255,.3);
+  letter-spacing:.1em;text-transform:uppercase;
+  z-index:10;
+}
+</style>
+</head>
+<body>
+<div class="stage" id="stage">
+  <div class="grid-bg" id="grid"></div>
+  <div class="glow glow-1" id="g1"></div>
+  <div class="glow glow-2" id="g2"></div>
+
+  <!-- S1: Problema con estadística -->
+  <div class="scene" id="s1">
+    <div class="big-q" id="s1q">Tu negocio responde consultas todo el día.</div>
+    <div class="stat" id="s1n">24/7</div>
+    <div class="stat-label" id="s1l">// disponibilidad que tus clientes esperan</div>
+  </div>
+
+  <!-- S2: Solución -->
+  <div class="scene" id="s2">
+    <div class="sol-title" id="s2t">// NEXORA_BOTS</div>
+    <div class="bot-name" id="s2n">
+      <span class="green">Starter</span> · <span class="blue">Smart</span> · <span class="purple">Enterprise</span>
+    </div>
+    <div style="font-size:14px;color:#5a5a72;text-align:center;margin-top:16px;line-height:1.7;opacity:0;" id="s2sub">Tres niveles de inteligencia.<br>Un solo objetivo: automatizar tu negocio.</div>
+  </div>
+
+  <!-- S3: Chat demo -->
+  <div class="scene" id="s3">
+    <div style="font-size:13px;color:#5a5a72;letter-spacing:.1em;text-transform:uppercase;margin-bottom:16px;opacity:0;" id="s3title">// así trabaja tu bot</div>
+    <div class="chat-window" id="chat">
+      <div class="chat-header">
+        <div class="chat-av">🤖</div>
+        <div>
+          <div class="chat-name">NexBot — Atención</div>
+        </div>
+        <div class="chat-status">activo 24/7</div>
+      </div>
+      <div class="chat-msgs" id="msgs"></div>
+    </div>
+  </div>
+
+  <!-- S4: Planes -->
+  <div class="scene" id="s4">
+    <div style="font-size:13px;color:#5a5a72;letter-spacing:.1em;text-transform:uppercase;margin-bottom:8px;opacity:0;width:100%;" id="s4t">// elige tu nivel</div>
+    <div class="plan" id="pl1">
+      <div class="plan-dot" style="background:#00e5a0;"></div>
+      <div><div class="plan-name">Starter Bot</div><div class="plan-desc">Flujo guiado · sin IA externa</div></div>
+      <div class="plan-tag" style="background:rgba(0,229,160,.12);color:#00e5a0;">gratis demo</div>
+    </div>
+    <div class="plan" id="pl2">
+      <div class="plan-dot" style="background:#5599ff;"></div>
+      <div><div class="plan-name">Smart Bot</div><div class="plan-desc">NLP · Intent Detection</div></div>
+      <div class="plan-tag" style="background:rgba(85,153,255,.12);color:#5599ff;">popular</div>
+    </div>
+    <div class="plan" id="pl3">
+      <div class="plan-dot" style="background:#c070ff;"></div>
+      <div><div class="plan-name">Enterprise Bot</div><div class="plan-desc">ML · API propia · SAP/ERP</div></div>
+      <div class="plan-tag" style="background:rgba(192,112,255,.12);color:#c070ff;">corporativo</div>
+    </div>
+  </div>
+
+  <!-- S5: Stats -->
+  <div class="scene" id="s5">
+    <div class="stats-title" id="s5t">// resultados reales</div>
+    <div class="stat-row">
+      <div class="stat-box" id="sb1"><div class="stat-num">24/7</div><div class="stat-lbl">disponibilidad</div></div>
+      <div class="stat-box" id="sb2"><div class="stat-num">-20hs</div><div class="stat-lbl">ahorro semanal</div></div>
+    </div>
+    <div class="stat-row">
+      <div class="stat-box" id="sb3"><div class="stat-num">+180%</div><div class="stat-lbl">más consultas</div></div>
+      <div class="stat-box" id="sb4"><div class="stat-num">48hs</div><div class="stat-lbl">implementación</div></div>
+    </div>
+  </div>
+
+  <!-- S6: CTA -->
+  <div class="scene" id="s6">
+    <div class="cta-logo" id="s6logo"><span class="w">NEXORA</span><span class="g">_</span><span class="w">Bots</span></div>
+    <div class="cta-sub" id="s6sub">// tu asistente digital, listo en 48hs</div>
+    <div class="cta-btn" id="s6btn">ver demo en vivo →</div>
+    <div class="cta-url" id="s6url">nexoraintelligence.co</div>
+  </div>
+
+  <div class="scene-dots">
+    <div class="dot active" id="d0"></div>
+    <div class="dot" id="d1"></div>
+    <div class="dot" id="d2"></div>
+    <div class="dot" id="d3"></div>
+    <div class="dot" id="d4"></div>
+    <div class="dot" id="d5"></div>
+  </div>
+  <div class="play-hint" id="hint">tocá para reproducir</div>
+</div>
+
+<script>
+const ease = t => t<.5?2*t*t:-1+(4-2*t)*t;
+
+function anim(el, props, dur, delay=0) {
+  return new Promise(res => {
+    setTimeout(() => {
+      const s = performance.now();
+      const init = {};
+      for (const k in props) {
+        if (k==='opacity') init[k]=parseFloat(el.style.opacity||0);
+        if (k==='translateY') init[k]=parseFloat(el.style.transform?.match(/translateY\((.+)px\)/)?.[1]||0);
+        if (k==='translateX') init[k]=parseFloat(el.style.transform?.match(/translateX\((.+)px\)/)?.[1]||0);
+        if (k==='scale') init[k]=parseFloat(el.style.transform?.match(/scale\((.+)\)/)?.[1]||1);
+        if (k==='width') init[k]=parseFloat(el.style.width||0);
+      }
+      function f(now) {
+        const t=Math.min((now-s)/dur,1),e=ease(t);
+        for (const k in props) {
+          const v=init[k]+(props[k]-init[k])*e;
+          if (k==='opacity') el.style.opacity=v;
+          if (k==='translateY') el.style.transform=`translateY(${v}px)`;
+          if (k==='translateX') el.style.transform=`translateX(${v}px)`;
+          if (k==='scale') el.style.transform=`scale(${v})`;
+          if (k==='width') el.style.width=v+'px';
+        }
+        t<1?requestAnimationFrame(f):res();
+      }
+      requestAnimationFrame(f);
+    }, delay);
+  });
+}
+
+function wait(ms) { return new Promise(r=>setTimeout(r,ms)); }
+
+function show(id) {
+  document.querySelectorAll('.scene').forEach(s=>{s.style.opacity=0;s.classList.remove('active');});
+  const s=document.getElementById(id);
+  s.style.opacity=1;s.classList.add('active');
+  const n=parseInt(id.replace('s',''))-1;
+  document.querySelectorAll('.dot').forEach((d,i)=>d.classList.toggle('active',i===n));
+}
+
+function hide(id) { return anim(document.getElementById(id),{opacity:0},350); }
+
+async function runSpot() {
+  document.getElementById('hint').style.opacity=0;
+  document.getElementById('grid').style.opacity=1;
+  document.getElementById('g1').style.opacity=1;
+  document.getElementById('g2').style.opacity=1;
+
+  // S1
+  show('s1');
+  await anim(document.getElementById('s1q'),{opacity:1},600,200);
+  await wait(400);
+  await anim(document.getElementById('s1n'),{opacity:1},500);
+  await wait(200);
+  await anim(document.getElementById('s1l'),{opacity:1},400);
+  await wait(1500);
+  await hide('s1');
+
+  // S2
+  show('s2');
+  await anim(document.getElementById('s2t'),{opacity:1},400,200);
+  const s2n=document.getElementById('s2n');
+  s2n.style.transform='translateY(20px)';
+  await anim(s2n,{opacity:1},500,300);
+  await anim(s2n,{translateY:0},500,300);
+  await anim(document.getElementById('s2sub'),{opacity:1},500,600);
+  await wait(1800);
+  await hide('s2');
+
+  // S3 — chat
+  show('s3');
+  await anim(document.getElementById('s3title'),{opacity:1},400,200);
+  const chatW=document.getElementById('chat');
+  chatW.style.transform='translateY(30px)';
+  await anim(chatW,{opacity:1},500,400);
+  await anim(chatW,{translateY:0},500,400);
+  await wait(500);
+  const chatMsgs=[
+    {t:'bot',m:'¡Hola! ¿En qué puedo ayudarte hoy?'},
+    {t:'usr',m:'¿Cuánto cuesta el servicio?'},
+    {t:'bot',m:'Tenemos 3 planes. ¿Querés que te explique cada uno?'},
+    {t:'usr',m:'Sí, el básico'},
+    {t:'bot',m:'El Starter Bot incluye FAQ, botones y derivación. ¡Sin código! 🚀'},
+  ];
+  const msgsEl=document.getElementById('msgs');
+  for (const m of chatMsgs) {
+    const d=document.createElement('div');
+    d.className=`msg msg-${m.t}`;
+    d.textContent=m.m;
+    msgsEl.appendChild(d);
+    await wait(50);
+    d.classList.add('show');
+    await wait(600);
+  }
+  await wait(1000);
+  await hide('s3');
+
+  // S4 — planes
+  show('s4');
+  await anim(document.getElementById('s4t'),{opacity:1},400,200);
+  for (const [i,id] of ['pl1','pl2','pl3'].entries()) {
+    const el=document.getElementById(id);
+    el.style.transform='translateX(-40px)';
+    await anim(el,{opacity:1},350,i*200);
+    await anim(el,{translateX:0},350,i*200);
+  }
+  await wait(2000);
+  await hide('s4');
+
+  // S5 — stats
+  show('s5');
+  await anim(document.getElementById('s5t'),{opacity:1},400,200);
+  for (const [i,id] of ['sb1','sb2','sb3','sb4'].entries()) {
+    const el=document.getElementById(id);
+    el.style.transform='translateY(20px)';
+    await anim(el,{opacity:1},350,200+i*150);
+    await anim(el,{translateY:0},350,200+i*150);
+  }
+  await wait(2000);
+  await hide('s5');
+
+  // S6 — CTA
+  show('s6');
+  const logo=document.getElementById('s6logo');
+  logo.style.transform='translateY(10px)';
+  await anim(logo,{opacity:1},500,300);
+  await anim(logo,{translateY:0},500,300);
+  await anim(document.getElementById('s6sub'),{opacity:1},400,600);
+  const btn=document.getElementById('s6btn');
+  btn.style.transform='translateY(10px)';
+  await anim(btn,{opacity:1},400,900);
+  await anim(btn,{translateY:0},400,900);
+  await anim(document.getElementById('s6url'),{opacity:1},400,1100);
+  await wait(3000);
+
+  document.getElementById('hint').textContent='▶ reproducir de nuevo';
+  document.getElementById('hint').style.opacity=1;
+  document.getElementById('stage').addEventListener('click',()=>location.reload(),{once:true});
+}
+
+document.getElementById('stage').addEventListener('click',()=>{
+  document.getElementById('hint').style.opacity=0;
+  runSpot();
+},{once:true});
+</script>
+</body>
+</html>
