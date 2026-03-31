@@ -28,8 +28,8 @@ _MESES = (
 _FECHA_PATTERNS: list[re.Pattern] = [
     # "el martes", "el lunes que viene"
     re.compile(rf"\b(?:el\s+)?({_DIAS})(?:\s+que\s+viene)?\b"),
-    # "mañana", "pasado mañana"
-    re.compile(r"\b(pasado\s+manana|manana)\b"),
+    # "mañana", "pasado mañana" — excluye "por la mañana" y "a la mañana" (expresiones de hora)
+    re.compile(r"(?<!por la )(?<!a la )\b(pasado\s+manana|manana)\b"),
     # "hoy"
     re.compile(r"\b(hoy)\b"),
     # "15 de abril", "3 de marzo"
@@ -44,10 +44,10 @@ _FECHA_PATTERNS: list[re.Pattern] = [
 _HORA_PATTERNS: list[re.Pattern] = [
     # "a las 10:30", "las 3:15"
     re.compile(r"\b(?:a\s+)?las\s+(\d{1,2}(?::\d{2})?)\b"),
-    # "a las 3", "las 15"  (ya cubierto arriba, pero por si falta "a las")
-    re.compile(r"\b(?:a\s+)?(?:las?\s+)?(\d{1,2})(?:\s*hs?\.?)?\b"),
-    # "3pm", "10am"
+    # "3pm", "10am" — antes del patrón genérico para evitar falsos negativos
     re.compile(r"\b(\d{1,2})\s*([ap]\.?m\.?)\b"),
+    # "a las 3", "las 15", "9 hs"
+    re.compile(r"\b(?:a\s+)?(?:las?\s+)?(\d{1,2})(?:\s*hs?\.?)?\b"),
     # "por la mañana/tarde/noche"
     re.compile(r"\b(por\s+la\s+(?:manana|tarde|noche))\b"),
     # "a la mañana/tarde/noche"
@@ -88,7 +88,7 @@ class EntityExtractor:
                 # Si es solo un número, verificamos que haya contexto horario
                 if raw.isdigit():
                     ctx = hora_text[max(0, m.start() - 15): m.end() + 15]
-                    if not re.search(r"\b(?:las?|hs?|am|pm|hora)\b", ctx):
+                    if not re.search(r"\b(?:las?|hs?|hora)\b|[ap]\.?m\.?\b", ctx):
                         continue
                 entities["hora"] = raw
                 break

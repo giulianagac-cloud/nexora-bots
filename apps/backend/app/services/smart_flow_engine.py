@@ -5,6 +5,10 @@ Reemplaza el matching por keywords con clasificación TF-IDF via NLPEngine.
 Aplica context boosting: si el usuario ya está en un estado asociado a un
 intent, ese intent recibe un bonus de score para mantener el contexto salvo
 que el usuario cambie claramente de tema.
+
+Slot-filling: los estados pueden declarar `required_entities` en flows.json.
+Cuando el usuario llega a esos estados el engine pide las entidades faltantes
+una por una y, al completarlas, interpola el mensaje template con los valores.
 """
 from __future__ import annotations
 
@@ -102,6 +106,55 @@ class SmartFlowEngine:
 
         return best_intent, best_score
 
+    def _build_result(
+        self,
+        next_state: str,
+        merged_entities: dict[str, str],
+        new_entities: dict[str, str],
+    ) -> FlowResult:
+        """
+        Construye el FlowResult para un estado destino.
+
+        Si el estado tiene `required_entities`:
+          - Entities faltantes → devuelve el prompt para la primera que falta,
+            mantiene el flow_state en next_state para seguir colectando.
+          - Entities completas → interpola el mensaje template y lo devuelve.
+
+        Si el estado no tiene `required_entities`, devuelve el mensaje normal
+        con interpolación opcional de entidades disponibles.
+        """
+        flow = self._flows.get(next_state, {})
+        required: list[str] = flow.get("required_entities", [])
+
+        if required:
+            missing = [e for e in required if e not in merged_entities]
+            if missing:
+                entity_prompts: dict[str, str] = flow.get("entity_prompts", {})
+                prompt = entity_prompts.get(
+                    missing[0], f"Por favor indicame: {missing[0]}"
+                )
+                return FlowResult(
+                    flow_state=next_state,
+                    reply_text=prompt,
+                    options=[],
+                    entities=new_entities,
+                )
+
+        # Todas las entidades presentes (o ninguna requerida): interpolar mensaje.
+        message: str = flow.get("message", self._fallback_message)
+        if merged_entities:
+            try:
+                message = message.format(**merged_entities)
+            except KeyError:
+                pass
+
+        return FlowResult(
+            flow_state=next_state,
+            reply_text=message,
+            options=self._options_for_state(next_state),
+            entities=new_entities,
+        )
+
     def next_step(self, state, user_input: str) -> FlowResult:
         # --- Paso 0: init trigger -------------------------------------------
         if user_input == "__init__":
@@ -125,23 +178,27 @@ class SmartFlowEngine:
                 options=self._options_for_state("main_menu"),
             )
 
-        # --- Paso 2: extracción de entidades (paralelo a NLP) ---------------
-        entities = self._entity_extractor.extract(user_input)
+        # --- Paso 2: extracción de entidades --------------------------------
+        new_entities = self._entity_extractor.extract(user_input)
+
+        # Entidades acumuladas en sesión + las de este turno.
+        merged_entities = {**state.entities, **new_entities}
 
         # --- Paso 3: clasificación NLP con context boosting -----------------
         intent, score = self._classify_with_context(user_input, state.flow_state)
 
         if intent is not None:
             next_state = self._nlp.state_for_intent(intent) or state.flow_state
-            next_flow = self._flows.get(next_state, {})
-            return FlowResult(
-                flow_state=next_state,
-                reply_text=next_flow.get("message", self._fallback_message),
-                options=self._options_for_state(next_state),
-                entities=entities,
-            )
+            return self._build_result(next_state, merged_entities, new_entities)
 
-        # --- Paso 4: fallback -----------------------------------------------
+        # --- Paso 4: continuar slot-filling si el estado actual lo requiere -
+        # Si NLP no clasificó nada pero estamos en un estado que recolecta
+        # entidades, seguimos colectando en lugar de mostrar un fallback.
+        current_flow = self._flows.get(state.flow_state, {})
+        if current_flow.get("required_entities"):
+            return self._build_result(state.flow_state, merged_entities, new_entities)
+
+        # --- Paso 5: fallback -----------------------------------------------
         fallback_text = (
             self._fallback_message
             if state.flow_state == "main_menu"
@@ -151,5 +208,5 @@ class SmartFlowEngine:
             flow_state=state.flow_state,
             reply_text=fallback_text,
             options=self._options_for_state(state.flow_state),
-            entities=entities,
+            entities=new_entities,
         )

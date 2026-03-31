@@ -1,0 +1,10 @@
+{
+  "client_id": "trenbot",
+  "messages": {
+    "welcome": "¡Hola! Bienvenido a TrenBot Enterprise.",
+    "fallback_main_menu": "TrenBot Enterprise puede asistirte en los siguientes módulos: Administración de Personal, Búsquedas Internas, Servicio Médico y Soporte.",
+    "fallback_module_menu": "Podés continuar dentro del módulo actual o volver al menú principal.",
+    "back_to_main_menu": "Volviste al menú principal.",
+    "back_keywords": ["volver", "menu", "inicio"]
+  }
+}

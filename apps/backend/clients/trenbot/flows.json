@@ -1,0 +1,181 @@
+{
+  "client_id": "trenbot",
+  "flows": [
+    {
+      "state": "main_menu",
+      "message": "¡Hola! Bienvenido a TrenBot Enterprise. ¿En qué módulo puedo ayudarte? Podés elegir: Administración de Personal, Búsquedas Internas, Servicio Médico o Soporte.",
+      "options": [
+        {
+          "label": "Administración de Personal",
+          "keywords": ["administracion", "admin", "personal", "licencias"],
+          "next_state": "administracion_personal_menu"
+        },
+        {
+          "label": "Búsquedas Internas",
+          "keywords": ["busquedas", "busqueda"],
+          "next_state": "busquedas_internas_menu"
+        },
+        {
+          "label": "Servicio Médico",
+          "keywords": ["medico", "servicio"],
+          "next_state": "servicio_medico_menu"
+        },
+        {
+          "label": "Soporte",
+          "keywords": ["soporte"],
+          "next_state": "soporte_menu"
+        },
+        {
+          "label": "Guía de licencias",
+          "keywords": ["vacation", "leave"],
+          "next_state": "leave_guidance"
+        }
+      ]
+    },
+    {
+      "state": "administracion_personal_menu",
+      "message": "Ingresaste a Administración de Personal. Podés elegir: Licencias disponibles o Justificar licencias.",
+      "options": [
+        {
+          "label": "Licencias disponibles",
+          "keywords": ["disponibles"],
+          "next_state": "licencias_disponibles"
+        },
+        {
+          "label": "Justificar licencias",
+          "keywords": ["justificar"],
+          "next_state": "justificar_licencias_menu"
+        }
+      ]
+    },
+    {
+      "state": "licencias_disponibles",
+      "message": "Consultando tus licencias disponibles...",
+      "options": []
+    },
+    {
+      "state": "justificar_licencias_menu",
+      "message": "¿Qué licencia querés justificar? Podés elegir: A. Vacaciones, B. Examen, C. Mudanza.",
+      "options": [
+        {
+          "label": "A. Vacaciones",
+          "keywords": ["a", "vacaciones"],
+          "next_state": "justificar_vacaciones"
+        },
+        {
+          "label": "B. Examen",
+          "keywords": ["b", "examen", "final"],
+          "next_state": "justificar_examen"
+        },
+        {
+          "label": "C. Mudanza",
+          "keywords": ["c", "mudanza"],
+          "next_state": "justificar_mudanza"
+        }
+      ]
+    },
+    {
+      "state": "justificar_vacaciones",
+      "message": "Para justificar vacaciones, la solicitud debe realizarse con 25 días de anticipación. Podés descargar el formulario correspondiente aquí: /static/forms/vacaciones.pdf",
+      "options": []
+    },
+    {
+      "state": "justificar_examen",
+      "message": "Para justificar licencia por examen, debés presentar el comprobante correspondiente. Podés descargar el formulario aquí: /static/forms/examen.pdf",
+      "options": []
+    },
+    {
+      "state": "justificar_mudanza",
+      "message": "Para solicitar la licencia por mudanza, debés presentar el formulario de mudanza antes de gozar la licencia. Podés descargarlo aquí: /static/forms/mudanza.pdf\n\nAl reincorporarte, debés presentar también la DDJJ de nuevo domicilio. Podés descargarla aquí: /static/forms/ddjj_domicilio.pdf",
+      "options": []
+    },
+    {
+      "state": "busquedas_internas_menu",
+      "message": "Módulo Búsquedas Internas en construcción.",
+      "options": [
+        {
+          "label": "Vacantes",
+          "keywords": ["vacantes"],
+          "next_state": "busquedas_internas_menu",
+          "message": "Podés consultar búsquedas internas vigentes o futuras oportunidades dentro de la empresa."
+        }
+      ]
+    },
+    {
+      "state": "servicio_medico_menu",
+      "message": "Ingresaste a Servicio Médico. Podés elegir: A. Aviso de enfermedad, B. Justificar licencia.",
+      "options": [
+        {
+          "label": "A. Aviso de enfermedad",
+          "keywords": ["a", "aviso"],
+          "next_state": "aviso_enfermedad_menu"
+        },
+        {
+          "label": "B. Justificar licencia",
+          "keywords": ["b", "justificar"],
+          "next_state": "justificar_licencia_medica_menu"
+        }
+      ]
+    },
+    {
+      "state": "aviso_enfermedad_menu",
+      "message": "Ingresaste a Aviso de enfermedad.\nPodés elegir:\nA. Consultar aviso de enfermedad\nB. Consultar próxima cita",
+      "options": [
+        {
+          "label": "A. Consultar aviso de enfermedad",
+          "keywords": ["aviso", "a"],
+          "next_state": "aviso_enfermedad_menu",
+          "message": "Tenés una solicitud de aviso de enfermedad realizada el 16/03/2026 a las 06:30 hs.\n\nTenés 48 hs desde la realización de la solicitud para presentar el certificado médico correspondiente."
+        },
+        {
+          "label": "B. Consultar próxima cita",
+          "keywords": ["cita", "b"],
+          "next_state": "aviso_enfermedad_menu",
+          "message": "No tenés programada ninguna cita en Servicio Médico."
+        }
+      ]
+    },
+    {
+      "state": "justificar_licencia_medica_menu",
+      "message": "Ingresaste a Justificar licencia.\nPodés elegir:\nA. Certificado médico\nB. Exodoncia\nC. Donación de sangre",
+      "options": [
+        {
+          "label": "A. Certificado médico",
+          "keywords": ["a", "certificado"],
+          "next_state": "justificar_licencia_medica_menu",
+          "message": "Para justificar licencia con certificado médico, debés presentar la constancia correspondiente."
+        },
+        {
+          "label": "B. Exodoncia",
+          "keywords": ["b", "exodoncia"],
+          "next_state": "justificar_licencia_medica_menu",
+          "message": "Para justificar licencia por exodoncia, debés presentar el certificado odontológico correspondiente."
+        },
+        {
+          "label": "C. Donación de sangre",
+          "keywords": ["c", "donacion", "sangre"],
+          "next_state": "justificar_licencia_medica_menu",
+          "message": "Para justificar licencia por donación de sangre, debés presentar el comprobante emitido por el centro de salud."
+        }
+      ]
+    },
+    {
+      "state": "soporte_menu",
+      "message": "Módulo Soporte Somos Trenes en construcción.",
+      "options": [
+        {
+          "label": "Soporte técnico",
+          "keywords": ["soporte", "acceso", "problema", "app"],
+          "next_state": "soporte_menu",
+          "message": "Podés informar problemas de acceso, uso de la app o consultas de soporte interno."
+        }
+      ]
+    },
+    {
+      "state": "leave_guidance",
+      "message": "Para gestionar licencias o ausencias, seguí el circuito de licencias correspondiente. Podés acceder desde Administración de Personal.",
+      "options": []
+    }
+  ],
+  "fallback_message": "TrenBot Enterprise puede asistirte en los siguientes módulos: Administración de Personal, Búsquedas Internas, Servicio Médico y Soporte."
+}

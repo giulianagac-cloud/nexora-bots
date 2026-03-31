@@ -24,7 +24,12 @@
     },
     {
       "state": "turnos_menu",
-      "message": "Para sacar un turno podés contactarnos por WhatsApp o email. Te paso los datos.",
+      "required_entities": ["fecha", "hora"],
+      "entity_prompts": {
+        "fecha": "¿Para qué día querés el turno?",
+        "hora": "¿A qué hora te queda mejor?"
+      },
+      "message": "¡Perfecto! Tu turno está agendado para el {fecha} a las {hora} hs. Nos comunicaremos para confirmarlo.",
       "options": []
     },
     {

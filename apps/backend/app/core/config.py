@@ -10,7 +10,7 @@ class Settings(BaseSettings):
     app_name: str = "TrenBot Enterprise Backend"
     environment: str = Field(default="development")
     api_prefix: str = "/"
-    client_id: str = Field(default="demo")
+    client_id: str = Field(default="trenbot")
 
 
 @lru_cache

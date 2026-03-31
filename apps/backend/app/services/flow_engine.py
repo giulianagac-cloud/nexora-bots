@@ -1,4 +1,5 @@
 import json
+import re
 import unicodedata
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -26,6 +27,11 @@ class FlowResult:
 BASE_DIR = Path(__file__).resolve().parents[2]  # apps/backend/
 
 
+def get_vacaciones() -> dict:
+    """Devuelve datos de vacaciones disponibles desde SAP (stub)."""
+    return {"dias_disponibles": 0}
+
+
 def _load_json(client_id: str, filename: str) -> dict:
     path = BASE_DIR / "clients" / client_id / filename
     with open(path, encoding="utf-8") as f:
@@ -40,7 +46,7 @@ def _load_json(client_id: str, filename: str) -> dict:
 # en Python (estados, keywords, mensajes) ahora viene de esos archivos.
 # ---------------------------------------------------------------------------
 class FlowEngine:
-    def __init__(self, client_id: str = "demo") -> None:
+    def __init__(self, client_id: str = "trenbot") -> None:
         self.client_id = client_id
 
         # flows.json: lista de estados con sus mensajes y opciones de transición
@@ -84,9 +90,12 @@ class FlowEngine:
                 result.append({"label": opt["label"], "keyword": opt["keywords"][0]})
         return result
 
+    def _kw_matches(self, kw: str, normalized: str) -> bool:
+        """Verifica si la keyword es una palabra completa en el texto normalizado."""
+        return bool(re.search(r"\b" + re.escape(kw) + r"\b", normalized))
+
     def next_step(self, state, user_input: str) -> FlowResult:
         # --- Paso 0: init trigger --------------------------------------------
-        # El frontend envía "__init__" al montar para obtener el estado inicial.
         if user_input == "__init__":
             main_flow = self._flows.get("main_menu", {})
             return FlowResult(
@@ -101,10 +110,9 @@ class FlowEngine:
         if state.flow_state != "main_menu" and any(
             kw in normalized for kw in self._back_keywords
         ):
-            main_flow = self._flows.get("main_menu", {})
             return FlowResult(
                 flow_state="main_menu",
-                reply_text=self._back_to_main_text + "\n\n" + main_flow.get("message", ""),
+                reply_text=self._back_to_main_text,
                 options=self._options_for_state("main_menu"),
             )
 
@@ -113,12 +121,25 @@ class FlowEngine:
 
         if current_flow:
             for option in current_flow.get("options", []):
-                if any(kw in normalized for kw in option["keywords"]):
+                if any(self._kw_matches(kw, normalized) for kw in option["keywords"]):
                     next_state = option["next_state"]
                     next_flow = self._flows.get(next_state, {})
+
+                    # Caso especial: licencias_disponibles consulta SAP
+                    if next_state == "licencias_disponibles":
+                        data = get_vacaciones()
+                        dias = data.get("dias_disponibles", "?")
+                        reply_text = f"Según SAP, tenés {dias} días de vacaciones disponibles."
+                    else:
+                        # Mensaje por opción (si existe) o mensaje del estado destino
+                        reply_text = option.get(
+                            "message",
+                            next_flow.get("message", self._fallback_message),
+                        )
+
                     return FlowResult(
                         flow_state=next_state,
-                        reply_text=next_flow.get("message", self._fallback_message),
+                        reply_text=reply_text,
                         options=self._options_for_state(next_state),
                     )
 

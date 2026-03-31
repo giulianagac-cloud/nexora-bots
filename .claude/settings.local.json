@@ -1,0 +1,37 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python -m pytest tests/ -v)",
+      "Bash(py -m pytest tests/ -v)",
+      "Read(//c/Users/Giuliana/.local/bin/**)",
+      "Read(//usr/**)",
+      "Bash(python3 -m pytest tests/ -v)",
+      "Read(//c/Users/Giuliana/.venv/**)",
+      "Read(//c/Users/Giuliana/**)",
+      "Bash(find /c/Users/Giuliana -path */pypoetry/venv/Scripts/python.exe)",
+      "Bash(find /c/Users/Giuliana -path */uv/python* -name python.exe)",
+      "Bash(find /c/Users/Giuliana -name activate -path */Scripts/*)",
+      "Bash(where.exe python:*)",
+      "Bash(where.exe python3:*)",
+      "Read(//c/Program Files/**)",
+      "Read(//c/Program Files \\(x86\\)/**)",
+      "Bash(cmd.exe /c \"cd C:\\\\Users\\\\Giuliana\\\\nexora-bots\\\\apps\\\\backend && python --version\")",
+      "Bash(cmd.exe /c \"python --version\")",
+      "Bash(cmd.exe /c \"where python\")",
+      "Bash(cmd.exe /c \"python --version && where python\")",
+      "Bash(powershell.exe -NoProfile -Command \"python --version; \\(Get-Command python\\).Source\")",
+      "Bash(powershell.exe -NoProfile -Command \"py -3.12 --version\")",
+      "Bash(powershell.exe -NoProfile -Command \"py -3 --version\")",
+      "Bash(powershell.exe -NoProfile -Command \"py --version\")",
+      "Bash(pip install:*)",
+      "Bash(python -m pytest tests/test_flow_engine.py -v)",
+      "Bash(python -m pytest tests/test_flow_engine.py::test_flow_engine_returns_main_menu_fallback -v)",
+      "Bash(xargs cat:*)",
+      "Bash(python -m pytest tests/test_smart_flow_engine.py -v)",
+      "Bash(python -m pytest tests/test_chat.py::test_chat_returns_guided_leave_response -v)",
+      "Bash(python -m pytest tests/test_flow_engine.py::test_flow_engine_routes_from_administracion_personal_menu -v)",
+      "Bash(python -m pytest tests/test_entity_extractor.py -v)",
+      "Bash(git add:*)"
+    ]
+  }
+}
