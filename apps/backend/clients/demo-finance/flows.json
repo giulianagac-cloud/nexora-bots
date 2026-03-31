@@ -1,0 +1,40 @@
+{
+  "client_id": "demo-finance",
+  "flows": [
+    {
+      "state": "main_menu",
+      "message": "Hola, soy Finance Assistant. Puedo ayudarte con presupuesto, facturas, vencimientos, pagos y reportes. ¿Qué necesitás consultar?",
+      "options": []
+    },
+    {
+      "state": "presupuesto_menu",
+      "message": "El presupuesto disponible para el período actual es de $2.450.000. Ejecutado hasta hoy: $1.120.000 (45,7%). Saldo restante: $1.330.000.",
+      "options": []
+    },
+    {
+      "state": "facturas_menu",
+      "message": "Tenés 4 facturas pendientes de pago:\n• Factura #0042 — Proveedor Alfa — $85.000 — vence 05/04\n• Factura #0051 — Servicios TI — $42.500 — vence 08/04\n• Factura #0063 — Logística Sur — $130.000 — vence 12/04\n• Factura #0071 — Suministros SA — $27.300 — vence 15/04",
+      "options": []
+    },
+    {
+      "state": "vencimientos_menu",
+      "message": "Próximos vencimientos esta semana:\n• Lunes 31/03 — IVA mensual — $98.400\n• Miércoles 02/04 — Cuota leasing equipos — $54.000\n• Viernes 04/04 — Factura #0038 Proveedor Beta — $67.200\n\nTotal comprometido: $219.600.",
+      "options": []
+    },
+    {
+      "state": "registrar_pago_menu",
+      "required_entities": ["fecha"],
+      "entity_prompts": {
+        "fecha": "¿Para qué fecha es el pago que querés registrar?"
+      },
+      "message": "Pago registrado para el {fecha}. Recordá adjuntar el comprobante en el sistema de gestión para completar el proceso.",
+      "options": []
+    },
+    {
+      "state": "reporte_menu",
+      "message": "Resumen del mes en curso (marzo 2026):\n• Ingresos: $3.820.000\n• Egresos: $2.690.000\n• Resultado neto: +$1.130.000\n• Facturas emitidas: 18 — Cobradas: 14 — Pendientes: 4\n• Días promedio de cobro: 22 días",
+      "options": []
+    }
+  ],
+  "fallback_message": "No pude identificar tu consulta financiera. Podés preguntarme sobre presupuesto, facturas, vencimientos, pagos o reportes."
+}

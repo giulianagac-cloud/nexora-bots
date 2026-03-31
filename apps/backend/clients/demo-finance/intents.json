@@ -1,0 +1,87 @@
+{
+  "client_id": "demo-finance",
+  "confidence_threshold": 0.50,
+  "context_boost": 0.35,
+  "intents": [
+    {
+      "intent": "presupuesto",
+      "next_state": "presupuesto_menu",
+      "examples": [
+        "cuánto presupuesto tenemos disponible",
+        "qué presupuesto queda",
+        "cuál es el saldo del presupuesto",
+        "presupuesto disponible para el mes",
+        "cuánto tenemos para gastar",
+        "mostrame el presupuesto actual",
+        "cuánto presupuesto ejecutamos",
+        "qué porcentaje del presupuesto usamos",
+        "consultar presupuesto",
+        "presupuesto restante del período"
+      ]
+    },
+    {
+      "intent": "facturas",
+      "next_state": "facturas_menu",
+      "examples": [
+        "qué facturas tenemos pendientes",
+        "mostrame las facturas por pagar",
+        "cuáles son las facturas impagas",
+        "hay facturas sin pagar",
+        "estado de facturas pendientes",
+        "qué le debemos a los proveedores",
+        "facturas que vencen pronto",
+        "listar facturas pendientes",
+        "cuántas facturas hay sin pagar",
+        "ver facturas a vencer"
+      ]
+    },
+    {
+      "intent": "vencimientos",
+      "next_state": "vencimientos_menu",
+      "examples": [
+        "qué vence esta semana",
+        "próximos vencimientos",
+        "qué tenemos que pagar pronto",
+        "obligaciones que vencen en los próximos días",
+        "fechas de vencimiento próximas",
+        "qué impuestos vencen",
+        "cuándo vence el próximo pago",
+        "recordatorio de vencimientos",
+        "agenda de pagos de la semana",
+        "qué pagos se vienen"
+      ]
+    },
+    {
+      "intent": "registrar_pago",
+      "next_state": "registrar_pago_menu",
+      "examples": [
+        "quiero registrar un pago",
+        "registrar un pago realizado",
+        "anotar un pago",
+        "cargué un pago y quiero dejarlo asentado",
+        "necesito registrar una transferencia",
+        "acabo de hacer un pago",
+        "pagué una factura y quiero registrarlo",
+        "ingresar pago al sistema",
+        "asentar un pago",
+        "marcar factura como pagada"
+      ]
+    },
+    {
+      "intent": "reporte",
+      "next_state": "reporte_menu",
+      "examples": [
+        "mostrame el reporte del mes",
+        "resumen financiero del mes",
+        "cómo cerramos el mes",
+        "resultado del período",
+        "balance del mes",
+        "cuánto facturamos este mes",
+        "resumen de ingresos y egresos",
+        "dame el cierre mensual",
+        "informe financiero mensual",
+        "ver el estado de resultados del mes"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "client_id": "demo-finance",
+  "messages": {
+    "welcome": "Hola, soy Finance Assistant. Puedo ayudarte con consultas sobre presupuesto, facturas, vencimientos, pagos y reportes. ¿En qué puedo ayudarte hoy?",
+    "fallback_main_menu": "No identifiqué tu consulta financiera. Podés preguntarme sobre presupuesto disponible, facturas pendientes, vencimientos, registrar un pago o el reporte del mes.",
+    "fallback_module_menu": "Podés continuar con tu consulta o escribir 'volver' para ir al menú principal.",
+    "back_to_main_menu": "Volviste al menú principal. ¿En qué más puedo ayudarte?",
+    "back_keywords": ["volver", "menu", "inicio", "cancelar"]
+  }
+}

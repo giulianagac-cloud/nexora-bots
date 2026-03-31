@@ -1,0 +1,8 @@
+{
+  "client_id": "demo-finance",
+  "bot_name": "Finance Assistant",
+  "bot_type": "smart",
+  "contact": {
+    "email": "finanzas@empresa.com"
+  }
+}
