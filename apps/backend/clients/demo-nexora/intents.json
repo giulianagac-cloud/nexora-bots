@@ -1,0 +1,87 @@
+{
+  "client_id": "demo-nexora",
+  "confidence_threshold": 0.50,
+  "context_boost": 0.35,
+  "intents": [
+    {
+      "intent": "servicios",
+      "next_state": "servicios_menu",
+      "examples": [
+        "qué servicios ofrecen",
+        "en qué pueden ayudarnos",
+        "qué hace Nexora exactamente",
+        "qué tipo de soluciones desarrollan",
+        "tenemos procesos que queremos automatizar",
+        "buscamos implementar un bot para nuestra empresa",
+        "qué incluye el servicio de automatización",
+        "trabajamos con desarrollo web y necesitamos algo más",
+        "queremos incorporar inteligencia artificial",
+        "cómo funciona el servicio de consultoría"
+      ]
+    },
+    {
+      "intent": "precios",
+      "next_state": "precios_menu",
+      "examples": [
+        "cuánto sale implementar un bot",
+        "qué planes tienen disponibles",
+        "necesito un presupuesto para mi empresa",
+        "cuál es el costo de automatización",
+        "cuánto cobran por el desarrollo",
+        "tienen algún plan para pymes",
+        "qué diferencia hay entre los planes",
+        "cuánto sale el plan más completo",
+        "me podés mandar precios",
+        "quiero saber cuánto sale antes de avanzar"
+      ]
+    },
+    {
+      "intent": "demo",
+      "next_state": "demo_menu",
+      "examples": [
+        "me gustaría ver una demo",
+        "tienen algún ejemplo en vivo",
+        "quiero ver cómo funciona el bot",
+        "podemos hacer una prueba antes de contratar",
+        "dónde puedo ver un ejemplo real",
+        "quiero probar el asistente antes de decidir",
+        "tienen algo para mostrarme cómo queda",
+        "pueden mostrarme un caso en vivo",
+        "cómo se ve el bot en funcionamiento",
+        "me interesa ver el producto antes de avanzar"
+      ]
+    },
+    {
+      "intent": "casos",
+      "next_state": "casos_menu",
+      "examples": [
+        "tienen casos de clientes reales",
+        "con qué tipo de empresas trabajaron",
+        "me pueden mostrar ejemplos de lo que hicieron",
+        "qué resultados tuvieron sus clientes",
+        "implementaron algo para estudios jurídicos",
+        "trabajaron con gimnasios o centros deportivos",
+        "quiero ver casos concretos antes de decidir",
+        "qué empresas los contrataron",
+        "tienen referencias de clientes",
+        "cómo les fue a otras empresas con el bot"
+      ]
+    },
+    {
+      "intent": "contacto",
+      "next_state": "contacto_menu",
+      "examples": [
+        "quiero hablar con alguien del equipo",
+        "cómo me contacto con ustedes",
+        "necesito hablar con un asesor",
+        "quiero que me llamen",
+        "tienen WhatsApp",
+        "me pasan el mail de contacto",
+        "necesito coordinar una reunión",
+        "quiero avanzar con una propuesta",
+        "me pueden escribir para coordinar",
+        "quiero hablar con una persona antes de decidir"
+      ]
+    }
+  ]
+}

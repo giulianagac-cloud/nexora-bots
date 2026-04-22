@@ -1,0 +1,42 @@
+{
+  "client_id": "demo-nexora",
+  "flows": [
+    {
+      "state": "main_menu",
+      "message": "¡Hola! Soy Nexora Assistant. Puedo contarte sobre nuestros servicios, planes y precios, mostrarte una demo en vivo o conectarte con nuestro equipo. ¿Por dónde querés arrancar?",
+      "options": [
+        { "label": "Servicios de Nexora", "keywords": ["servicios", "que hacen", "que ofrecen", "automatizacion", "bots"], "next_state": "servicios_menu" },
+        { "label": "Precios y planes", "keywords": ["precios", "planes", "costo", "cuanto sale", "tarifa", "presupuesto"], "next_state": "precios_menu" },
+        { "label": "Ver demo en vivo", "keywords": ["demo", "ver", "probar", "ejemplo"], "next_state": "demo_menu" },
+        { "label": "Casos de éxito", "keywords": ["casos", "ejemplos", "clientes", "experiencias"], "next_state": "casos_menu" },
+        { "label": "Hablar con el equipo", "keywords": ["contacto", "hablar", "persona", "equipo", "whatsapp"], "next_state": "contacto_menu" }
+      ]
+    },
+    {
+      "state": "servicios_menu",
+      "message": "Nexora desarrolla soluciones de inteligencia artificial para empresas:\n\n• Automatización de procesos — eliminamos tareas repetitivas con flujos inteligentes\n• Bots conversacionales — asistentes para WhatsApp, web y canales internos\n• Desarrollo web — sitios y plataformas con IA integrada\n• Consultoría en IA — diagnóstico y estrategia para implementar IA en tu empresa\n\n¿Querés saber más sobre alguno de estos servicios?",
+      "options": []
+    },
+    {
+      "state": "precios_menu",
+      "message": "Nuestros planes están pensados para distintos tamaños de empresa:\n\n• Starter — USD 450 a 600\n  Bot básico con flujos predefinidos, ideal para dar el primer paso\n\n• Smart — USD 800 a 1.500\n  Bot con IA, reconocimiento de intenciones y personalización avanzada\n\n• Enterprise — desde USD 2.000\n  Solución a medida, integraciones con sistemas internos y soporte dedicado\n\nTodos los planes incluyen onboarding y soporte técnico. ¿Querés que te contacte un asesor para armar un presupuesto?",
+      "options": []
+    },
+    {
+      "state": "demo_menu",
+      "message": "Podés ver un demo en vivo de nuestros bots en:\n\nnexora-bots-ten.vercel.app\n\nAhí vas a encontrar ejemplos reales: bots para atención al cliente, gestión interna y automatización de procesos. ¿Querés que un asesor te haga un recorrido personalizado?",
+      "options": []
+    },
+    {
+      "state": "casos_menu",
+      "message": "Estos son algunos casos de clientes que ya usan Nexora:\n\nEstudio jurídico — Dr. Claudio\nAutomatizamos la recepción de consultas legales. El bot clasifica el tipo de caso, solicita la información inicial y agenda la primera reunión sin intervención humana.\n\nGimnasio\nImplementamos un bot que gestiona turnos, consultas sobre clases y recordatorios de pago. Redujo el 70% de las consultas manuales por WhatsApp.\n\n¿Querés explorar cómo aplicarlo en tu empresa?",
+      "options": []
+    },
+    {
+      "state": "contacto_menu",
+      "message": "Podés contactarnos por:\n\nWhatsApp: +54 9 11 3340-9351\nEmail: contacto@nexoraintelligence.co\n\nNuestro equipo responde en el día. ¡Estamos para ayudarte a automatizar tu negocio!",
+      "options": []
+    }
+  ],
+  "fallback_message": "No entendí bien tu consulta. Podés preguntarme sobre nuestros servicios, precios, ver una demo o conocer casos de éxito."
+}

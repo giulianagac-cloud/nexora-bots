@@ -1,0 +1,10 @@
+{
+  "client_id": "demo-nexora",
+  "messages": {
+    "welcome": "¡Hola! Soy Nexora Assistant, el asistente virtual de Nexora Intelligence. Puedo contarte sobre nuestros servicios de automatización e IA, planes y precios, mostrarte una demo en vivo o conectarte con nuestro equipo. ¿En qué puedo ayudarte?",
+    "fallback_main_menu": "No identifiqué tu consulta. Podés preguntarme sobre nuestros servicios, precios, ver una demo en vivo, conocer casos de éxito o contactarte con el equipo.",
+    "fallback_module_menu": "Podés continuar con tu consulta o escribir 'volver' para ir al menú principal.",
+    "back_to_main_menu": "Volviste al menú principal. ¿En qué más puedo ayudarte?",
+    "back_keywords": ["volver", "menu", "inicio", "cancelar"]
+  }
+}

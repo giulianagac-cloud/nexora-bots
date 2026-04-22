@@ -1,0 +1,9 @@
+{
+  "client_id": "demo-nexora",
+  "bot_name": "Nexora Assistant",
+  "bot_type": "smart",
+  "contact": {
+    "whatsapp": "+54 9 11 3340-9351",
+    "email": "contacto@nexoraintelligence.co"
+  }
+}
